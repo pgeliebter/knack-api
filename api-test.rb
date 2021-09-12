@@ -1,6 +1,7 @@
 require "dotenv/load"
 require "http"
 require "pg"
+require "byebug"
 
 num = 1
 
