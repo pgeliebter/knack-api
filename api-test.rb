@@ -2,6 +2,7 @@ require "dotenv/load"
 require "http"
 require "pg"
 require "byebug"
+require "csv"
 
 num = 1
 
@@ -12,11 +13,11 @@ num = 1
 #   p response.parse
 # end
 
-conn = PG.connect(dbname: "movie_app_development")
-conn.exec("SELECT * FROM pg_stat_activity") do |result|
-  puts "     PID | User             | Query"
-  result.each do |row|
-    puts " %7d | %-16s | %s " %
-           row.values_at("pid", "usename", "query")
-  end
-end
+# conn = PG.connect(dbname: "movie_app_development")
+# conn.exec("SELECT * FROM pg_stat_activity") do |result|
+#   puts "     PID | User             | Query"
+#   result.each do |row|
+#     puts " %7d | %-16s | %s " %
+#            row.values_at("pid", "usename", "query")
+#   end
+# end
