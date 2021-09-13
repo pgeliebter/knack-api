@@ -23,18 +23,20 @@ pp problem_codes
 
 # CSV stuff
 # static headers for new csv file
-headers = ["ID", "Mandate Id", "Accounting Id", "Match Field", "Paid On", "Paid", "Updated"]
+headers = ["ID", "Mandate Id", "Accounting Id", "Match Field", "Paid On", "Paid", "Import Code", "Updated"]
 # Open up the new csv file
 CSV.open("../../Documents/TurnaroundImport_8-7_Test_Write.csv", "w") do |csv|
   # import headers into new file
   csv << headers
   # open up original csv line by line
   CSV.foreach("../../Documents/TurnaroundImport_8-7.csv", headers: true, header_converters: :symbol) do |row|
-    # p row[:paid_on], row[:id]
+    row["Import Code"] = problem_codes[row[:match_field]]
+    row[:updated] = "Yes"
     if row[:paid_on]
       parsed_date = Date.strptime(row[:paid_on], "%m/%d/%y")
       row[:paid_on] = parsed_date
     end
+
     csv << row
   end
 end
