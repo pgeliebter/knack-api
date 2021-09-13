@@ -1,3 +1,6 @@
 .gitignore
 .env
 .byebug_history
+
+# ignore all csv files
+*.csv
