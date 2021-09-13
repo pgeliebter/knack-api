@@ -55,13 +55,15 @@ require "addressable/uri"
 # end
 
 # CSV stuff
+csv_num = 1
 # static headers for new csv file
-headers = ["ID", "Mandate Id", "Accounting Id", "Match Field", "Paid On", "Paid", "Import Code", "Knack Id"]
+headers = ["ID", "Mandate Id", "Accounting Id", "Match Field", "Paid On", "Paid", "Import Code", "Knack Id", "Response"]
 # Open up the new csv file
 CSV.open("TurnaroundImport_Test_Write.csv", "w") do |csv|
   # import headers into new file
   csv << headers
   # open up original csv line by line
+
   CSV.foreach("TurnaroundImport_9-7-21_Test.csv", headers: true, header_converters: :symbol) do |row|
     row["Import Code"] = @problem_codes[row[:match_field]]
     # this is a get request that returns a single record
@@ -72,9 +74,11 @@ CSV.open("TurnaroundImport_Test_Write.csv", "w") do |csv|
       .headers("X-Knack-Application-Id" => ENV["KNACK_APP_ID"], "X-Knack-REST-API-KEY" => ENV["KNACK_API_KEY"])
       .get("https://usgc-api.knack.com/v1/objects/object_6/records?filters=#{filters}")
     body = JSON.parse(response.body)
-    p session_id = body["records"][0]["id"]
-    p response.code
+    session_id = body["records"][0]["id"]
+    p [csv_num, response.code, session_id]
+
     row[:knack_id] = session_id
+    row[:response] = response.code
 
     csv << row
     if row[:paid_on]
