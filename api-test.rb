@@ -15,9 +15,16 @@ require "./problem_code.rb"
 #   p response.parse
 # end
 
-# response = HTTP
-#   .headers("X-Knack-Application-Id" => ENV["KNACK_APP_ID"], "X-Knack-REST-API-KEY" => ENV["KNACK_API_KEY"])
-#   .put("https://api.knack.com/v1/objects/#{@problem_code_object}/records/record_ID")
+@problem_codes.each do |_match_field, id|
+  response = HTTP
+    .headers("X-Knack-Application-Id" => ENV["KNACK_APP_ID"], "X-Knack-REST-API-KEY" => ENV["KNACK_API_KEY"], "content-type" => "application/json")
+    .put("https://usgc-api.knack.com/v1/objects/#{@problem_code_object}/records/#{id}", :json => { :field_1226 => id })
+  p response.parse(:json)
+  if response.code == 400
+    pp response
+    break
+  end
+end
 
 # # CSV stuff
 # # static headers for new csv file
