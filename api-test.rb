@@ -3,6 +3,7 @@ require "http"
 require "pg"
 require "byebug"
 require "csv"
+require "date"
 
 num = 1
 
@@ -22,8 +23,6 @@ num = 1
 #   end
 # end
 
-# p CSV.read("Book2.csv")
-
 table = CSV.parse(File.read("Book2.csv"), headers: true)
 
 # table.each do |row|
@@ -35,9 +34,18 @@ table = CSV.parse(File.read("Book2.csv"), headers: true)
 
 headers = ["ID", "Mandate Id", "Accounting Id", "Match Field", "Paid On", "Paid", "Updated"]
 CSV.open("../../Documents/TurnaroundImport_8-7_Test_Write.csv", "w") do |csv|
-  # csv << headers
-  CSV.foreach("../../Documents/TurnaroundImport_8-7_Test.csv", headers: true, header_converters: :symbol, return_headers: true) do |row|
-    p row
+  csv << headers
+  CSV.foreach("../../Documents/TurnaroundImport_8-7_Test.csv", headers: true, header_converters: :symbol) do |row|
+    parsed_date = Date.strptime(row[:paid_on], "%m/%d/%y")
+    row[:paid_on] = parsed_date
     csv << row
   end
 end
+
+# CSV::Converters.each_pair do |name, value|
+#   if value.kind_of?(Proc)
+#     p [name, value.class]
+#   else
+#     p [name, value]
+#   end
+# end
